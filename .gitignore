@@ -1,5 +1,6 @@
 target/
+project/
 .idea/
 *.iml
-.bsp/
-.scala-build/
+**/.bsp/
+**/.scala-build/
