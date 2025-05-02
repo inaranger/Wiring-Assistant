@@ -18,7 +18,7 @@ class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
   
 
   //returns neighbours
-  def getNeighbours(node: Node): Array[(Node, Byte)] = 
+  private def getNeighbours(node: Node): Array[(Node, Byte)] = 
     edges.getOrElse(node, Array.empty)
 
   //Simple dijkstra for Pathfinding
