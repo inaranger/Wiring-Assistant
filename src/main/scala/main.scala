@@ -1,12 +1,12 @@
 import scala.io.StdIn
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.ListBuffer
 
 @main
 def main(): Unit = {
-  println("ENTER!!!!!")
+  //input reading
+  println("enter your Input")
   var readInput = true
-  val lines = scala.collection.mutable.ListBuffer[String]()
-
+  val lines = ListBuffer[String]()
   while(readInput){
     val input = StdIn.readLine()
     input match {
@@ -14,28 +14,18 @@ def main(): Unit = {
       case _    => lines += input
     }
   }
-  val problems = parse(lines.toList)
-  for problem <- problems do
-    val graph = new Graph(problem._1, problem._2)
-    val solution = graph.findPath(problem._3, problem._4)
-    println(solution.get)
-}
-def parse(input: List[String]): Seq[(Int, Seq[(Int, Int, Int, Int)], Node, Node)] =
-  val buffer = ArrayBuffer[(Int,Seq[(Int,Int,Int,Int)],Node,Node)]()
-  val problems = input.grouped(3)
-  for problem <- problems do
-    val List(firstLine,secondLine,thirdLine) = problem
-    val Array(n_wire, size) =  firstLine.split(" ").map(_.toInt)
-    val wires = secondLine.split(" ").map(_.toInt).grouped(4).map{case Array(x1,y1,x2,y2) => (x1,y1,x2,y2)}.toSeq
-    val Array(startx, starty, goalx, goaly) = thirdLine.split(" ").map(_.toInt)
-    val instance = (size,wires,Node(startx,starty),Node(goalx,goaly))
-    buffer += instance
-  buffer.toSeq
+  val problems = Parser.parse(lines.toList)
 
-//things to consider
-//output
-//
-//simplify graph solving algorithm
-//compressing graph (large patches of essentially nothing going on, -> sparse graph)
-//horizontal-vertical split of wires for faster access
-//clean up parsing process to make prettier code
+  val wires: Seq[Wire] = Seq(
+    Wire(Node(0,0),Node(1,0),0),Wire(Node(4,0),Node(4,6),1),
+    Wire(Node(0,5),Node(5,5),2),Wire(Node(8,2),Node(8,6),3),
+    Wire(Node(6,4),Node(6,7),4),Wire(Node(7,6),Node(7,8),5),
+    Wire(Node(2,6),Node(5,6),6),Wire(Node(7,8),Node(9,8),7),
+  )
+
+  val graph = new PCBGraph(10, 10, wires)
+  val result = graph.dijkstra(Node(6,8),Node(5,1))
+  print(result)
+  val nfg = graph.getNeighbours(Node(5,5))
+  //main loop + parsing
+}
