@@ -1,4 +1,4 @@
-case class Node(x: Short, y: Short) 
+case class Node(x: Short, y: Short)
 
 case class Wire(start: Node, end: Node, id: Byte) {
   def nodes : Seq[Node] =
@@ -7,3 +7,9 @@ case class Wire(start: Node, end: Node, id: Byte) {
     else
       (math.min(start.x, end.x) to math.max(start.x, end.x)).map(x => Node(x.toShort, start.y))
 }
+
+class WireBuilder(var x1: Int, var y1: Int, var x2: Int, var y2: Int, var id: Int) {
+  def toWire: Wire = Wire(Node(x1.toShort,y1.toShort),Node(x2.toShort,y2.toShort),id.toByte)
+}
+
+class SearchTargets(var StartX: Int, var StartY: Int, var GoalX: Int, var GoalY: Int)

@@ -16,16 +16,10 @@ def main(): Unit = {
     }
   }
   val problems = Parser.parse(lines.toList)
-  for (size,wires,start,goal) <- problems do {
-    val grid = new PCBGraph(size,size,wires)
+  for (size,wireData,searchTargets) <- problems do {
+    val (width,height,wires,start,goal) = Optimizer.optimize(size,wireData,searchTargets)
+    val grid = new PCBGraph(width,height,wires)
     val (cost, path) = grid.dijkstra(start,goal).get
     println(cost)
   }
-
-  val wires: Seq[Wire] = Seq(
-    Wire(Node(0,0),Node(1,0),0),Wire(Node(4,0),Node(4,6),1),
-    Wire(Node(0,5),Node(5,5),2),Wire(Node(8,2),Node(8,6),3),
-    Wire(Node(6,4),Node(6,7),4),Wire(Node(7,6),Node(7,8),5),
-    Wire(Node(2,6),Node(5,6),6),Wire(Node(7,8),Node(9,8),7),
-  )
 }
