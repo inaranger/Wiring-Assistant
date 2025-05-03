@@ -1,7 +1,7 @@
 import scala.collection.mutable
 
 class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
-  
+  //Map of all Nodes with a Wire on them
   private val nodeWireMap: Map[Node, Set[Byte]] = {
     val builder = mutable.Map.empty[Node, mutable.Set[Byte]].withDefault(_ => mutable.Set.empty)
     wires.foreach { wire =>
@@ -14,16 +14,12 @@ class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
   
   //Graph is saved as Adjacency List (Map of Nodes)
   private val edges: Map[Node, Array[(Node, Byte)]] = build(width, height, wires)
-  
-  
 
   //returns neighbours
-  private def getNeighbours(node: Node): Array[(Node, Byte)] = 
-    edges.getOrElse(node, Array.empty)
+  private def getNeighbours(node: Node): Array[(Node, Byte)] = edges.getOrElse(node, Array.empty)
 
   //Simple dijkstra for Pathfinding
   def dijkstra(start: Node, goal: Node): Option[(Int,Seq[Node])] = {
-    
     val queue = mutable.PriorityQueue.empty[(Int,Node)](
       Ordering.by[(Int, Node),Int](-_._1)
     )
@@ -36,6 +32,7 @@ class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
       val (current_distance,current) = queue.dequeue()
 
       if (current == goal) {
+        //get final cost -> min amount of crossing. Incorporate Wires affecting start Node
         val cost = distances(goal) + nodeWireMap.getOrElse(start,Set.empty).size
         // Reconstruct path
         val path = mutable.ListBuffer.empty[Node]
@@ -77,7 +74,6 @@ class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
     } {
       edges.getOrElseUpdate(node, mutable.ArrayBuffer.empty) += (neighbour -> cost) //add nodes with edge to map
     }
-
     edges.view.mapValues(_.toArray).toMap
   }
 
@@ -89,6 +85,5 @@ class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
     if ((nodeWires & neighbourWires).nonEmpty)  -1 //nodes share wires -> no edge
     else if (neighbourWires.isEmpty) 0 // neighbour is free -> no costs
     else  neighbourWires.size.toByte // neighbour has wires -> costs equal to amount of wires on node
-
   }
 }

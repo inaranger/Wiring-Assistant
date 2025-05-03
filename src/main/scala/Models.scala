@@ -12,4 +12,6 @@ class WireBuilder(var x1: Int, var y1: Int, var x2: Int, var y2: Int, var id: In
   def toWire: Wire = Wire(Node(x1.toShort,y1.toShort),Node(x2.toShort,y2.toShort),id.toByte)
 }
 
-class SearchTargets(var StartX: Int, var StartY: Int, var GoalX: Int, var GoalY: Int)
+class SearchTargets(var startX: Int, var startY: Int, var goalX: Int, var goalY: Int){
+  def toNodes :(Node,Node) = (Node(startX.toShort,startY.toShort),Node(goalX.toShort,goalY.toShort))
+}

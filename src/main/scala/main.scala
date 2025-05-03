@@ -3,7 +3,7 @@ import scala.collection.mutable.ListBuffer
 
 @main
 def main(): Unit = {
-  //input reading
+  //read the input
   println("enter your Input")
   var readInput = true
   val lines = ListBuffer[String]()
@@ -15,10 +15,16 @@ def main(): Unit = {
       case _    => lines += input
     }
   }
+  
+  //parse the input
   val problems = Parser.parse(lines.toList)
   for (size,wireData,searchTargets) <- problems do {
-    val (width,height,wires,start,goal) = Optimizer.optimize(size,wireData,searchTargets)
+    //optimize the grid size
+    val gridU = new Optimizer(size,wireData,searchTargets)
+    val (width,height,wires,start,goal) = gridU.cropGrid
+    //create graph
     val grid = new PCBGraph(width,height,wires)
+    //solve the problem
     val (cost, path) = grid.dijkstra(start,goal).get
     println(cost)
   }

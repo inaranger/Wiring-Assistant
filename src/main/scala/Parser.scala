@@ -12,10 +12,8 @@ object Parser {
           case (Array(x1, y1, x2, y2), idx) => new WireBuilder(x1,y1,x2,y2,idx)
         }
       } 
-      val Array(startx, starty, goalx, goaly) = thirdLine.split(" ").map(_.toInt)
-      val instance = (size,wireData,new SearchTargets(startx,starty,goalx,goaly))
+      val Array(startX, startY, goalX, goalY) = thirdLine.split(" ").map(_.toInt)
+      val instance = (size,wireData,new SearchTargets(startX,startY,goalX,goalY))
       buffer += instance
     buffer.toSeq
-
-
 }
