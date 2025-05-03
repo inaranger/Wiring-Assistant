@@ -1,6 +1,6 @@
 import scala.collection.mutable
 
-class PCBGraph(width: Int,height: Int, wires: Seq[Wire]) {
+class PCBGraph(width: Int, height: Int, wires: Seq[Wire]) {
   //Map of all Nodes with a Wire on them
   private val nodeWireMap: Map[Node, Set[Byte]] = {
     val builder = mutable.Map.empty[Node, mutable.Set[Byte]].withDefault(_ => mutable.Set.empty)

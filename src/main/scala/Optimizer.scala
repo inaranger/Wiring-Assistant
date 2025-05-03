@@ -1,5 +1,5 @@
 class Optimizer(size: Int, initialWireData: Seq[WireBuilder], searchTargets: SearchTargets) {
-  private val wireData = mergeWires(initialWireData)
+  private val wireData = initialWireData.toArray
   private val xCoords: Array[Int] = {
     val baseCoords = wireData.flatMap(w => Array(w.x1,w.x2))
     (baseCoords ++ Array(searchTargets.startX,searchTargets.goalX)).distinct.sorted
@@ -14,9 +14,9 @@ class Optimizer(size: Int, initialWireData: Seq[WireBuilder], searchTargets: Sea
   def cropGrid: (Int,Int,Seq[Wire],Node,Node) = {
     //Apply Bounding Box to Grid
     if(xCoords(0) > 1) updateColumns(1,xCoords(0)-1)
-    if (xCoords(xCoords.length-1) + 1 < width) width = xCoords(xCoords.length-1) + 1
+    if (xCoords(xCoords.length-1) + 1 < width) width = xCoords(xCoords.length-1) + 2
     if (yCoords(0) > 1) updateLines(1, yCoords(0) - 1)
-    if (yCoords(yCoords.length-1) + 1 < height) height = yCoords(yCoords.length-1) + 1
+    if (yCoords(yCoords.length-1) + 1 < height) height = yCoords(yCoords.length-1) + 2
 
     //detect identical columns
     for(i <- 0 until xCoords.length - 1){
@@ -69,6 +69,4 @@ class Optimizer(size: Int, initialWireData: Seq[WireBuilder], searchTargets: Sea
     //update height
     height -= remove
   }
-
-  private def mergeWires(wireData: Seq[WireBuilder]) : Array[WireBuilder] = wireData.toArray
 }
