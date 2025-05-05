@@ -4,4 +4,3 @@ project/
 *.iml
 **/.bsp/
 **/.scala-build/
-build.sbt

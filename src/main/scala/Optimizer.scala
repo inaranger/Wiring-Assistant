@@ -2,31 +2,25 @@ class Optimizer(size: Int, initialWireData: Seq[WireBuilder], searchTargets: Sea
   private val wireData = initialWireData.toArray
   private val xCoords: Array[Int] = {
     val baseCoords = wireData.flatMap(w => Array(w.x1,w.x2))
-    (baseCoords ++ Array(searchTargets.startX,searchTargets.goalX)).distinct.sorted
+    (baseCoords ++ Array(0,searchTargets.startX,searchTargets.goalX,size-1)).distinct.sorted
   }
   private val yCoords: Array[Int] = {
     val baseCoords = wireData.flatMap(w => Array(w.y1,w.y2))
-    (baseCoords ++ Array(searchTargets.startY,searchTargets.goalY)).distinct.sorted
+    (baseCoords ++ Array(0,searchTargets.startY,searchTargets.goalY,size-1)).distinct.sorted
   }
   private var height = size
   private var width = size
 
   def cropGrid: (Int,Int,Seq[Wire],Node,Node) = {
-    //Apply Bounding Box to Grid
-    if(xCoords(0) > 1) updateColumns(1,xCoords(0)-1)
-    if (xCoords(xCoords.length-1) + 1 < width) width = xCoords(xCoords.length-1) + 2
-    if (yCoords(0) > 1) updateLines(1, yCoords(0) - 1)
-    if (yCoords(yCoords.length-1) + 1 < height) height = yCoords(yCoords.length-1) + 2
-
     //detect identical columns
     for(i <- 0 until xCoords.length - 1){
       val gap = xCoords(i + 1) - xCoords(i)
       if (gap > 2) updateColumns(xCoords(i),gap - 2)
     }
-    //detect identical lines
+    //detect identical rows
     for(i <- 0 until yCoords.length - 1){
       val gap = yCoords(i + 1) - yCoords(i)
-      if (gap > 2) updateLines(yCoords(i),gap - 2)
+      if (gap > 2) updateRows(yCoords(i),gap - 2)
     }
     //convert data
     val wires = wireData.map(wire => wire.toWire)
@@ -52,7 +46,7 @@ class Optimizer(size: Int, initialWireData: Seq[WireBuilder], searchTargets: Sea
     width -= remove
   }
 
-  private def updateLines(threshold: Int, remove: Int): Unit = {
+  private def updateRows(threshold: Int, remove: Int): Unit = {
     //update Coordinates
     for (i <- yCoords.indices) {
       if (yCoords(i) > threshold) yCoords(i) -= remove

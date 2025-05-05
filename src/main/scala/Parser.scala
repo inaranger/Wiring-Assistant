@@ -1,12 +1,12 @@
 import scala.collection.mutable.ArrayBuffer
 object Parser {
-  def parse(input: List[String]): Seq[(Int, Seq[WireBuilder], SearchTargets)] =
+  def parse(input: Seq[String]): Seq[(Int, Seq[WireBuilder], SearchTargets)] =
     val buffer = ArrayBuffer[(Int,Seq[WireBuilder],SearchTargets)]()
-    //seperate problem instances
+    //separate problem instances
     val problems = input.grouped(3)
     
     for problem <- problems do
-      val List(firstLine,secondLine,thirdLine) = problem
+      val Seq(firstLine,secondLine,thirdLine) = problem
       //first line -> size
       val Array(n_wire, size) =  firstLine.split(" ").map(_.toInt)
       //second line -> wire coordinates
