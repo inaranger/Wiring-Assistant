@@ -38,12 +38,6 @@ class Graph(width: Int, height: Int, wires: Seq[Wire]) {
     } {
       adjacencyMapBuilder.getOrElseUpdate(node, mutable.ArrayBuffer.empty) += (neighbour -> cost.get)
     }
-//    print("her!!!!")
-//    adjacencyMapBuilder.foreach{(key, value) =>
-//      print(key)
-//      print(" -> ")
-//      println(value)
-//    }
     adjacencyMapBuilder.view.mapValues(_.toArray).toMap
   }
 
