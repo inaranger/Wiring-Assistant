@@ -1,7 +1,7 @@
 object Visualizer {
-  
+
   def printProblem(width: Int, height: Int, wires: Seq[Wire],start: Node, goal: Node) : Unit = {
-    println("Grid was reduced, new Specification:")
+    println("The Grid may have been reduced for Optimization. Updated Problem Description:")
     println()
     println("Grid Size: width: " + width + " height: " + height)
     println()
