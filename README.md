@@ -4,11 +4,15 @@
 This is a Solution for a Programming Problem of the ACM-Contest written in Scala. \
 Please review Wiring-Assistant.pdf to understand the Problem-Description
 
-## Requirements
-1. [Scala](https://www.scala-lang.org/) Version 3.3.5 and up
-2. [sbt](https://www.scala-sbt.org/) Version 1.10.1 and up
 ## How to use
-1. Call `sbt run` in the root of this folder in your Terminal
-2. Enter the Input over multiple Lines as explained in the Problem Description
-3. Enter `0 0` in a seperate Line to calculate the Solution
+**Option 1: execute jar file**
+1. Download [java](https://www.java.com/en/download/) Version 8 or up
+2. run `java -jar wiring-assitant.jar` in the root Folder to start project
+3. Enter the Input over multiple Lines as explained in the Problem Description
+4. Enter `0 0` in a separate Line to calculate the Solution
+
+**Option 2: Build Project**
+1. Download [sbt](https://www.scala-sbt.org/) Version 1.10.1 or up
+2. Call `sbt run` in the root Folder to build project
+3. Follow Step 3-4 of Option 1
 
