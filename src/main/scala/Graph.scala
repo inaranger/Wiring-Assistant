@@ -18,7 +18,7 @@ class Graph(width: Int, height: Int, wires: Seq[Wire]) {
 
   //builds a PCBGraph from width and height of grid and Data of Wires on Grid
   private def build(width: Int, height: Int, wires: Seq[Wire]): Map[Node, Array[(Node, Byte)]] = {
-    val adjacencyMapBuilder = mutable.Map.empty[Node, mutable.ArrayBuffer[(Node, Byte)]].withDefaultValue(mutable.ArrayBuffer.empty)
+    val adjacencyMapBuilder = mutable.Map.empty[Node, mutable.ArrayBuffer[(Node, Byte)]]
 
     //compute all nodes and edges
     for {
@@ -37,6 +37,7 @@ class Graph(width: Int, height: Int, wires: Seq[Wire]) {
       if cost.isDefined //invalid edges get removed
     } {
       adjacencyMapBuilder.getOrElseUpdate(node, mutable.ArrayBuffer.empty) += (neighbour -> cost.get)
+      //adjacencyMapBuilder.put(node,adjacencyMapBuilder(node).addOne((neighbour,cost.get)))
     }
     adjacencyMapBuilder.view.mapValues(_.toArray).toMap
   }
@@ -53,22 +54,26 @@ class Graph(width: Int, height: Int, wires: Seq[Wire]) {
   //returns neighbours
   private def getNeighbours(node: Node): Array[(Node, Byte)] = adjacencyMap.getOrElse(node, Array.empty)
 
+  private def manhattanDistance(node: Node,goal: Node): Int =
+    math.abs(node.x -goal.x) + math.abs(node.y-goal.y)
+
   //Simple dijkstra for Pathfinding
   def dijkstra(start: Node, goal: Node): Option[(Int,Seq[Node])] = {
-    val queue = mutable.PriorityQueue.empty[(Int,Node)](
-      Ordering.by[(Int, Node),Int](-_._1)
+
+    val queue = mutable.PriorityQueue.empty[(Int,Int,Node)](
+      Ordering.by[(Int,Int, Node),(Int,Int)]({case (cost,distance, _) => (-cost,-distance)})
     )
-    val distances: mutable.Map[Node,Int] = mutable.Map(start -> 0)
+    val costs: mutable.Map[Node,Int] = mutable.Map(start -> 0)
     val predecessor = mutable.Map.empty[Node,Node]
 
-    queue.enqueue((0,start))
+    queue.enqueue((0,manhattanDistance(start,goal),start))
 
     while(queue.nonEmpty){
-      val (current_distance,current) = queue.dequeue()
+      val (_,_,current) = queue.dequeue()
 
       if (current == goal) {
         //get final cost -> min amount of crossing. Incorporate Wires affecting start Node
-        val cost = distances(goal) + nodeWireMap.getOrElse(start,Set.empty).size
+        val cost = costs(goal) + nodeWireMap.getOrElse(start,Set.empty).size
         // Reconstruct path
         val path = mutable.ListBuffer.empty[Node]
         var node = goal
@@ -81,11 +86,11 @@ class Graph(width: Int, height: Int, wires: Seq[Wire]) {
       }
 
       getNeighbours(current).foreach { case (neighbour, cost) =>
-        val tentative_distance = distances(current) + cost
-        if (tentative_distance < distances.getOrElse(neighbour, Int.MaxValue)){
+        val tentative_cost = costs(current) + cost
+        if (tentative_cost < costs.getOrElse(neighbour, Int.MaxValue)){
           predecessor(neighbour) = current
-          distances(neighbour) = tentative_distance
-          queue.enqueue((tentative_distance,neighbour))
+          costs(neighbour) = tentative_cost
+          queue.enqueue((tentative_cost,manhattanDistance(neighbour,goal),neighbour))
         }
       }
     }
